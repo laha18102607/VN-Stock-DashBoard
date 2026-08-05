@@ -1,0 +1,14 @@
+{
+  "buildCommand": "next build",
+  "framework": "nextjs",
+  "installCommand": "npm install",
+  "devCommand": "next dev",
+  "outputDirectory": ".next",
+  "env": {
+    "DATABASE_URL": "file:./dev.db",
+    "JWT_SECRET": "@jwt-secret",
+    "JWT_EXPIRES_IN": "7d",
+    "NEXT_PUBLIC_APP_URL": "@app-url",
+    "NODE_ENV": "production"
+  }
+}
