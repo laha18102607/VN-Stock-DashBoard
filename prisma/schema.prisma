@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  username     String    @unique
+  email        String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  watchlist Watchlist[]
+  logs      Log[]
+
+  @@map("users")
+}
+
+model Watchlist {
+  id      String   @id @default(cuid())
+  userId  String
+  ticker  String
+  addedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, ticker])
+  @@index([userId])
+  @@index([ticker])
+  @@map("watchlists")
+}
+
+model AnalysisCache {
+  id        String   @id @default(cuid())
+  ticker    String
+  data      Json
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([ticker])
+  @@index([expiresAt])
+  @@map("analysis_cache")
+}
+
+model Log {
+  id        String   @id @default(cuid())
+  action    String
+  ticker    String?
+  userId    String?
+  timestamp DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([ticker])
+  @@index([timestamp])
+  @@map("logs")
+}
